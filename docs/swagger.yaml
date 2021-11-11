@@ -1,0 +1,102 @@
+basePath: /api/v1
+definitions:
+  model.Dog:
+    properties:
+      age:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+    type: object
+  util.Error:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Backend de prueba enfocado en guiar el desarrollo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Documentacion template con swagger
+  version: "1.0"
+paths:
+  /dogs:
+    get:
+      operationId: get-all-dogs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Dog'
+      summary: get all dogs in the todo list
+    post:
+      operationId: create-dog
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Dog'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Error'
+      summary: add a new item to the todo list
+  /dogs/{id}:
+    delete:
+      operationId: delete-dog-by-id
+      parameters:
+      - description: dog ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.Error'
+      summary: delete a dog item by ID
+    get:
+      operationId: get-dog-by-id
+      parameters:
+      - description: dog ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Dog'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.Error'
+      summary: get a dog item by ID
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

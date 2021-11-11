@@ -36,6 +36,11 @@ func (dogController *DogController) Routes(base *gin.RouterGroup, authNormal *jw
 }
 
 // GetAll : Obtener todos los perros
+// @Summary get all dogs in the todo list
+// @ID get-all-dogs
+// @Produce json
+// @Success 200 {object} model.Dog
+// @Router /dogs [get]
 func (dogController *DogController) GetAll() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		/* obtener parametros de paginacion*/
@@ -60,6 +65,12 @@ func (dogController *DogController) GetAll() func(c *gin.Context) {
 }
 
 // Create : Crear perro
+// @Summary add a new item to the todo list
+// @ID create-dog
+// @Produce json
+// @Success 200 {object} model.Dog
+// @Failure 400 {object} util.Error
+// @Router /dogs [post]
 func (dogController *DogController) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
@@ -84,6 +95,14 @@ func (dogController *DogController) Create() func(c *gin.Context) {
 }
 
 // One : Obtener perro por _id
+
+// @Summary get a dog item by ID
+// @ID get-dog-by-id
+// @Produce json
+// @Param id path string true "dog ID"
+// @Success 200 {object} model.Dog
+// @Failure 404 {object} util.Error
+// @Router /dogs/{id} [get]
 func (dogController *DogController) One() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
@@ -137,6 +156,13 @@ func (dogController *DogController) Update() func(c *gin.Context) {
 }
 
 // Delete : Eliminar perro por _id
+// @Summary delete a dog item by ID
+// @ID delete-dog-by-id
+// @Produce json
+// @Param id path string true "dog ID"
+// @Success 200
+// @Failure 404 {object} util.Error
+// @Router /dogs/{id} [delete]
 func (dogController *DogController) Delete() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
