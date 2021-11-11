@@ -11,8 +11,9 @@ import (
 
 // Constantes de nombres de colecciones
 const (
-	CollectionNameDog  = "Dog"
-	CollectionNameUser = "User"
+	CollectionNameDog       = "Dog"
+	CollectionNameUser      = "User"
+	CollectionNameInventory = "NewInventory"
 )
 
 // CreateIndex : Crea indices en las colecciones de mongo
