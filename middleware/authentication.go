@@ -1,17 +1,17 @@
 package middleware
 
 import (
-	"errors"
+	"context"
 	"log"
 	"os"
 	"time"
 
 	"github.com/citiaps/template-go-rest/model"
 	"github.com/citiaps/template-go-rest/util"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/globalsign/mgo/bson"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,30 +21,30 @@ type login struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-//LoginFunc : modificar esta funcion para hacer el login
-func LoginFunc(c *gin.Context) (interface{}, error) {
+// //LoginFunc : modificar esta funcion para hacer el login
+// func LoginFunc(c *gin.Context) (interface{}, error) {
 
-	log.Print("LoginFunc\n")
-	var loginVals login
-	if err := c.BindJSON(&loginVals); err != nil {
-		return "", jwt.ErrMissingLoginValues
-	}
+// 	log.Print("LoginFunc\n")
+// 	var loginVals login
+// 	if err := c.BindJSON(&loginVals); err != nil {
+// 		return "", jwt.ErrMissingLoginValues
+// 	}
 
-	colUser, session := model.GetCollection(model.CollectionNameUser)
-	defer session.Close()
-	var usuario model.User
+// 	colUser, session := model.GetCollection(model.CollectionNameUser)
+// 	defer session.Close()
+// 	var usuario model.User
 
-	if err := colUser.Find(bson.M{"email": loginVals.Email}).One(&usuario); err != nil {
-		//return nil, jwt.ErrFailedAuthentication
-		return nil, errors.New("Usuario y contraseña incorrectos")
-	} else {
-		if err := ComparePasswords(usuario.Hash, loginVals.Password); err != nil {
-			//return nil, jwt.ErrFailedAuthentication
-			return nil, errors.New("Usuario y contraseña incorrectos")
-		}
-		return usuario, nil
-	}
-}
+// 	if err := colUser.Find(bson.M{"email": loginVals.Email}).One(&usuario); err != nil {
+// 		//return nil, jwt.ErrFailedAuthentication
+// 		return nil, errors.New("Usuario y contraseña incorrectos")
+// 	} else {
+// 		if err := ComparePasswords(usuario.Hash, loginVals.Password); err != nil {
+// 			//return nil, jwt.ErrFailedAuthentication
+// 			return nil, errors.New("Usuario y contraseña incorrectos")
+// 		}
+// 		return usuario, nil
+// 	}
+// }
 
 //PARAMS:
 //-storedHash: password almacenado en la BD
@@ -79,11 +79,13 @@ func GeneratePassword(password string) string {
 // AuthorizatorFunc : funcion tipo middleware que define si el usuario esta autorizado a utilizar la siguiente funcion
 func AuthorizatorFunc(data interface{}, c *gin.Context) bool {
 	user := data.(map[string]interface{})
-	colUser, session := model.GetCollection(model.CollectionNameUser)
-	defer session.Close()
-	var usuario model.User
+	colUser, _ := model.GetCollection(model.CollectionNameUser)
+	// defer session.Close()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	if err := colUser.FindId(bson.ObjectIdHex(user["id"].(string))).One(&usuario); err != nil {
+	var usuario model.User
+	bsonId, err := primitive.ObjectIDFromHex(user["id"].(string))
+	if err = colUser.FindOne(ctx, bsonId).Decode(&usuario); err != nil {
 		return false
 	}
 	roles, exists := c.Get("roles")
@@ -128,7 +130,7 @@ func IdentityHandlerFunc(c *gin.Context) interface{} {
 
 type loginFunc func(c *gin.Context) (interface{}, error)
 
-func LoadJWTAuth(login loginFunc) *jwt.GinJWTMiddleware {
+func LoadJWTAuth() *jwt.GinJWTMiddleware {
 	log.Print("LoadJWTAuth\n")
 	var key string
 	var set bool
@@ -149,9 +151,9 @@ func LoadJWTAuth(login loginFunc) *jwt.GinJWTMiddleware {
 
 		PayloadFunc:     PayLoad,
 		IdentityHandler: IdentityHandlerFunc,
-		Authenticator:   login,
-		Authorizator:    AuthorizatorFunc,
-		Unauthorized:    UnauthorizedFunc,
+		// Authenticator:   login,
+		Authorizator: AuthorizatorFunc,
+		Unauthorized: UnauthorizedFunc,
 		//HTTPStatusMessageFunc: ResponseFunc,
 		// TokenLookup is a string in the form of "<source>:<name>" that is used
 		// to extract token from the request.

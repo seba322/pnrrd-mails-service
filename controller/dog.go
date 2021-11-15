@@ -5,12 +5,11 @@ import (
 	"net/http"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/citiaps/template-go-rest/middleware"
 	"github.com/citiaps/template-go-rest/model"
 	"github.com/citiaps/template-go-rest/util"
 	"github.com/gin-gonic/gin"
-
-	"github.com/globalsign/mgo/bson"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // DogController : Controlador de perro
@@ -25,12 +24,12 @@ func (dogController *DogController) Routes(base *gin.RouterGroup, authNormal *jw
 	{
 		dogRouter.GET("", dogController.GetAll())
 		// Al agregar asociar con usuario
-		dogRouter.POST("", authNormal.MiddlewareFunc(), dogController.Create())
+		dogRouter.POST("", dogController.Create())
 		dogRouter.GET("/:id", dogController.One())
 		// Verificar en handler que el perro sea dueño de usuario
-		dogRouter.PUT("/:id", authNormal.MiddlewareFunc(), dogController.Update())
+		dogRouter.PUT("/:id", dogController.Update())
 		// Solo admin puede eliminar
-		dogRouter.DELETE("/:id", middleware.SetRoles(RolAdmin), authNormal.MiddlewareFunc(), dogController.Delete())
+		dogRouter.DELETE("/:id", dogController.Delete())
 	}
 	return dogRouter
 }
@@ -50,7 +49,7 @@ func (dogController *DogController) GetAll() func(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, util.GetError("No se puedieron encontrar los parametros limit, offset", err))
 			return
 		}
-		page, err := dogModel.FindPaginate(bson.M{}, pagination.Limit, pagination.Offset)
+		page, err := dogModel.FindPaginate(bson.D{}, pagination.Limit, pagination.Offset)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, util.GetError("No se pudo obtener la lista de perros", err))
@@ -75,7 +74,7 @@ func (dogController *DogController) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		// Traer Usuario
-		user := userModel.LoadFromContext(c)
+		// user := userModel.LoadFromContext(c)
 		var dog model.Dog
 		err := c.Bind(&dog)
 		if err != nil {
@@ -83,7 +82,7 @@ func (dogController *DogController) Create() func(c *gin.Context) {
 			return
 		}
 		// Asignar owner
-		dog.Owner = user.ID
+		// dog.Owner = user.ID
 		err = dogModel.Create(&dog)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, util.GetError("No se pudo insertar perro", err))
@@ -111,7 +110,8 @@ func (dogController *DogController) One() func(c *gin.Context) {
 			c.JSON(http.StatusNotFound, util.GetError("No se encuentra parametro :id", nil))
 			return
 		}
-		if !bson.IsObjectIdHex(id) {
+
+		if !primitive.IsValidObjectID(id) {
 			c.JSON(http.StatusInternalServerError, util.GetError("El id ingresado no es válido", nil))
 			return
 		}
@@ -140,7 +140,7 @@ func (dogController *DogController) Update() func(c *gin.Context) {
 			return
 		}
 
-		if !bson.IsObjectIdHex(id) {
+		if !primitive.IsValidObjectID(id) {
 			c.JSON(http.StatusInternalServerError, util.GetError("El id ingresado no es válido", nil))
 			return
 		}
@@ -171,7 +171,7 @@ func (dogController *DogController) Delete() func(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, util.GetError("No se encuentra parametro :id", nil))
 			return
 		}
-		if !bson.IsObjectIdHex(id) {
+		if !primitive.IsValidObjectID(id) {
 			c.JSON(http.StatusInternalServerError, util.GetError("El id ingresado no es válido", nil))
 			return
 		}
