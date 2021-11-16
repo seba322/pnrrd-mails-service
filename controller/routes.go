@@ -20,6 +20,7 @@ type InventoryParams struct {
 	Institution  string `form:"institution" binding:"required"`
 	Hierarchy    string `form:"hierarchy" binding:"required"`
 	Hierarchy_id string `form:"hierarchy_id"`
+	TypeInv      string `form:"type" binding:"required"`
 }
 
 const (

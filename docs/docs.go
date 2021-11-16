@@ -242,6 +242,9 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
+                "index": {
+                    "type": "string"
+                },
                 "institucionId": {
                     "type": "string"
                 },

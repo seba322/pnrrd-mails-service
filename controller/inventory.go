@@ -25,12 +25,16 @@ func (inventoryController *InventoryController) Routes(base *gin.RouterGroup, au
 
 // GetInventory : Obtener inventario de una institucion, para una jerarquia especifica
 // @Summary Obtener inventario de una institución, para una jerarquía especifica
+// @Description Con este servicio se puede obtener el inventario.
+// @Description Existen 2 tipos de inventario, de información ( tag INFORMATION ) y recursos ( tag RESOURCE). El primero enfocado en las capacidades y el segundo en  información institucional.
+// @Description Siempre que se quiera obtener la información institucional en parámetro hierarchy debe ir “NACIONAL”.
 // @ID get-inventory
 // @Tags inventory
 // @Produce json
 // @Param institution query string true "Id de institución"
 // @Param hierarchy query string true "Tipo de jararquía de inventario solicitado"
-// @Param hierarchy_id query string false "Id de la jerarquía solicitada"
+// @Param hierarchy_id query string false "Id de la jerarquía solicitada, solo requerido si no es jerarquia nacional"
+// @Param type query string true "tipo de inventario solicitado (puede ser INFORMATION o RESOURCE)"
 // @Success 200 {object} model.Inventory
 // @Failure 400 {object} util.Error
 // @Router /inventories [get]
@@ -45,7 +49,11 @@ func (inventoryController *InventoryController) GetInventory() func(c *gin.Conte
 			return
 		}
 
-		inventory, err := inventoryModel.GetInventory(params.Institution, params.Hierarchy, params.Hierarchy_id)
+		if params.TypeInv == InformationTypeForm {
+			params.Hierarchy = model.NACIONAL_HIERARCHY
+		}
+
+		inventory, err := inventoryModel.GetInventory(params.Institution, params.Hierarchy, params.Hierarchy_id, params.TypeInv)
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, util.GetError("No se pudo obtener el inventario para esta consulta", err))

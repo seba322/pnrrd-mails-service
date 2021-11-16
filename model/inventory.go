@@ -13,16 +13,19 @@ import (
 type Inventory struct {
 	ID            primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	InstitucionId primitive.ObjectID `json:"institucionId" bson:"institucion_id"`
-	PronvinciaId  primitive.ObjectID `json:"provinciaId" bson:"provincia_id,omitempty"`
-	ComunaId      primitive.ObjectID `json:"comunaId" bson:"comuna_id,omitempty"`
-	RegionId      primitive.ObjectID `json:"regionId" bson:"region_id,omitempty"`
-	Hierarchy     string             `json:"hierarchy" bson:"hierarchy"`
-	CreationDate  time.Time          `json:"creationDate" bson:"creation_date"`
-	ModifiedDate  time.Time          `json:"modifiedDate" bson:"modified_date"`
-	State         string             `json:"state" bson:"state,omitempty"`
-	Details       interface{}        `json:"details" bson:"details,omitempty"`
+	Index         string             `json:"index" bson:"index,omitempty"`
+	HierarchyId   primitive.ObjectID `json:"hierarchyId" bson:"hierarchy_id,omitempty"`
+	// ComunaId      primitive.ObjectID `json:"comunaId" bson:"comuna_id,omitempty"`
+	// RegionId      primitive.ObjectID `json:"regionId" bson:"region_id,omitempty"`
+	Hierarchy    string    `json:"hierarchy" bson:"hierarchy"`
+	CreationDate time.Time `json:"creationDate" bson:"creation_date"`
+	ModifiedDate time.Time `json:"modifiedDate" bson:"modified_date"`
+	// State         string      `json:"state" bson:"state,omitempty"`
+	TypeInventory string      `json:"typeInvetory" bson:"type_inventory,omitempty"`
+	Details       interface{} `json:"details" bson:"details,omitempty"`
 }
 
+// Hierarchy value const
 const (
 	PROVINCIAL_HIERARCHY = "PROVINCIAL"
 	COMUNAL_HIERARCHY    = "COMUNAL"
@@ -30,11 +33,22 @@ const (
 	NACIONAL_HIERARCHY   = "NACIONAL"
 )
 
-var HierarchyMap = map[string]string{
-	PROVINCIAL_HIERARCHY: "provincia_id",
-	COMUNAL_HIERARCHY:    "comuna_id",
-	REGIONAL_HIERARCHY:   "region_id",
-}
+// state inventory
+const (
+	FINISHED     = "TERMINADO"
+	NOT_FINISHED = "NO_TERMINADO"
+)
+
+// // hierarchy query map
+// var HierarchyMap = map[string]string{
+// 	PROVINCIAL_HIERARCHY: "provincia_id",
+// 	COMUNAL_HIERARCHY:    "comuna_id",
+// 	REGIONAL_HIERARCHY:   "region_id",
+// }
+
+const (
+	NACIONAL_ID = 0
+)
 
 func (inventoryModel *Inventory) UpsertManyInventory(inventories []Inventory) error {
 	col, _, ctx := GetCollection(CollectionNameInventory)
@@ -44,6 +58,8 @@ func (inventoryModel *Inventory) UpsertManyInventory(inventories []Inventory) er
 	for _, inv := range inventories {
 		if inv.ID == primitive.NilObjectID {
 			inv.ID = primitive.NewObjectID()
+			inv.CreationDate = time.Now()
+			inv.ModifiedDate = time.Now()
 			op := mongo.NewInsertOneModel().
 				SetDocument(inv)
 			operations = append(operations, op)
@@ -65,7 +81,7 @@ func (inventoryModel *Inventory) UpsertManyInventory(inventories []Inventory) er
 	return err
 }
 
-func (inventoryModel *Inventory) GetInventory(institutionId string, hierarchy string, hierarchyId string) ([]Inventory, error) {
+func (inventoryModel *Inventory) GetInventory(institutionId string, hierarchy string, hierarchyId string, typeInventory string) ([]Inventory, error) {
 	col, _, ctx := GetCollection(CollectionNameInventory)
 
 	invs := []Inventory{}
@@ -80,10 +96,13 @@ func (inventoryModel *Inventory) GetInventory(institutionId string, hierarchy st
 	var query bson.D
 	if hierarchy == NACIONAL_HIERARCHY {
 
-		query = bson.D{{"institucion_id", instId}, {"hierarchy", NACIONAL_HIERARCHY}}
+		query = bson.D{{Key: "institucion_id", Value: instId},
+			{Key: "hierarchy_id", Value: NACIONAL_ID},
+			{Key: "type_inventory", Value: typeInventory}}
 	} else {
-		filterField := HierarchyMap[hierarchy]
-		query = bson.D{{"institucion_id", instId}, {filterField, hierarId}}
+		// filterField := HierarchyMap[hierarchy]
+		query = bson.D{{Key: "institucion_id", Value: instId},
+			{Key: "hierarchy_id", Value: hierarId}}
 	}
 
 	cursor, err := col.Find(ctx, query)
