@@ -48,9 +48,9 @@ func (inventoryModel *Inventory) UpsertManyInventory(inventories []Inventory) er
 				SetDocument(inv)
 			operations = append(operations, op)
 		} else {
-			op := mongo.NewUpdateOneModel().
+			op := mongo.NewReplaceOneModel().
 				SetFilter(bson.M{"_id": inv.ID}).
-				SetUpdate(inv)
+				SetReplacement(inv)
 			op.SetUpsert(true)
 			operations = append(operations, op)
 
