@@ -15,14 +15,11 @@ type Inventory struct {
 	InstitucionId primitive.ObjectID `json:"institucionId" bson:"institucion_id"`
 	Index         string             `json:"index" bson:"index,omitempty"`
 	HierarchyId   primitive.ObjectID `json:"hierarchyId" bson:"hierarchy_id,omitempty"`
-	// ComunaId      primitive.ObjectID `json:"comunaId" bson:"comuna_id,omitempty"`
-	// RegionId      primitive.ObjectID `json:"regionId" bson:"region_id,omitempty"`
-	Hierarchy    string    `json:"hierarchy" bson:"hierarchy"`
-	CreationDate time.Time `json:"creationDate" bson:"creation_date"`
-	ModifiedDate time.Time `json:"modifiedDate" bson:"modified_date"`
-	// State         string      `json:"state" bson:"state,omitempty"`
-	TypeInventory string      `json:"typeInvetory" bson:"type_inventory,omitempty"`
-	Details       interface{} `json:"details" bson:"details,omitempty"`
+	Hierarchy     string             `json:"hierarchy" bson:"hierarchy"`
+	CreationDate  time.Time          `json:"creationDate" bson:"creation_date"`
+	ModifiedDate  time.Time          `json:"modifiedDate" bson:"modified_date"`
+	TypeInventory string             `json:"typeInvetory" bson:"type_inventory,omitempty"`
+	Details       interface{}        `json:"details" bson:"details,omitempty"`
 }
 
 // Hierarchy value const

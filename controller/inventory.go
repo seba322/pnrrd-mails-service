@@ -67,6 +67,9 @@ func (inventoryController *InventoryController) GetInventory() func(c *gin.Conte
 
 // UpsertInventory : Ingresar actualizaciones de inventario
 // @Summary Ingresar actualizaciones de inventario, para una institución
+// @Description El body es un arreglo del objeto de respuesta que se muestra mas abajo
+// @Description Cada respuesta debe ir en el arreglo del body (da lo mismo el orden)
+// @Description Es importantel agregar el index de la capacidad que se esta declarando
 // @ID update-inventory
 // @Tags inventory
 // @Produce json

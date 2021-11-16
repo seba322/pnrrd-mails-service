@@ -18,6 +18,7 @@ const (
 	CollectionNameUser      = "User"
 	CollectionNameInventory = "NewInventory"
 	CollectionNameForm      = "Form"
+	CollectionNameHierarchy = "Hierarchy"
 )
 
 // CreateIndex : Crea indices en las colecciones de mongo
@@ -42,17 +43,17 @@ func CreateIndex(session *mongo.Database) {
 	InventoryIndex := []mongo.IndexModel{
 
 		{
-			Keys: bsonx.Doc{{Key: "institucion_id", Value: bsonx.Int32(1)}},
+			Keys: bsonx.Doc{{Key: "institucion_id", Value: bsonx.Int32(1)}, {Key: "hierarchy_id", Value: bsonx.Int32(1)}},
 		},
-		{
-			Keys: bsonx.Doc{{Key: "region_id", Value: bsonx.Int32(1)}},
-		},
-		{
-			Keys: bsonx.Doc{{Key: "provincia_id", Value: bsonx.Int32(1)}},
-		},
-		{
-			Keys: bsonx.Doc{{Key: "comuna_id", Value: bsonx.Int32(1)}},
-		},
+		// {
+		// 	Keys: bsonx.Doc{{Key: "region_id", Value: bsonx.Int32(1)}},
+		// },
+		// {
+		// 	Keys: bsonx.Doc{{Key: "provincia_id", Value: bsonx.Int32(1)}},
+		// },
+		// {
+		// 	Keys: bsonx.Doc{{Key: "comuna_id", Value: bsonx.Int32(1)}},
+		// },
 	}
 
 	_, err = session.Collection(CollectionNameInventory).Indexes().CreateMany(context.Background(), InventoryIndex, opts)

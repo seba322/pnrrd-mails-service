@@ -97,8 +97,35 @@
                 }
             }
         },
+        "/hierarchies": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "hierarchy"
+                ],
+                "summary": "Obtener la lista de jerarquias, agrupadas en Regiones-Provincias-Comunas",
+                "operationId": "get-hierarchy",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Hierarchy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/inventories": {
             "get": {
+                "description": "Con este servicio se puede obtener el inventario.\nExisten 2 tipos de inventario, de información ( tag INFORMATION ) y recursos ( tag RESOURCE). El primero enfocado en las capacidades y el segundo en  información institucional.\nSiempre que se quiera obtener la información institucional en parámetro hierarchy debe ir “NACIONAL”.",
                 "produces": [
                     "application/json"
                 ],
@@ -124,9 +151,16 @@
                     },
                     {
                         "type": "string",
-                        "description": "Id de la jerarquía solicitada",
+                        "description": "Id de la jerarquía solicitada, solo requerido si no es jerarquia nacional",
                         "name": "hierarchy_id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tipo de inventario solicitado (puede ser INFORMATION o RESOURCE)",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -212,17 +246,38 @@
                 }
             }
         },
+        "model.Hierarchy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "provincias": {
+                    "type": "array",
+                    "items": {}
+                }
+            }
+        },
         "model.Inventory": {
             "type": "object",
             "properties": {
-                "comunaId": {
-                    "type": "string"
-                },
                 "creationDate": {
                     "type": "string"
                 },
                 "details": {},
                 "hierarchy": {
+                    "type": "string"
+                },
+                "hierarchyId": {
                     "type": "string"
                 },
                 "id": {
@@ -237,13 +292,7 @@
                 "modifiedDate": {
                     "type": "string"
                 },
-                "provinciaId": {
-                    "type": "string"
-                },
-                "regionId": {
-                    "type": "string"
-                },
-                "state": {
+                "typeInvetory": {
                     "type": "string"
                 }
             }

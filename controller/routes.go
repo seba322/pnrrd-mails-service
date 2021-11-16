@@ -40,11 +40,13 @@ const (
 
 var formController FormController
 var inventoryController InventoryController
+var hierarchyController HierarchyController
 
 // Models
 var userModel model.User
 var formModel model.Form
 var inventoryModel model.Inventory
+var hierarchyModel model.Hierarchy
 
 func Routes(base *gin.RouterGroup) {
 	// Middleware
@@ -53,5 +55,6 @@ func Routes(base *gin.RouterGroup) {
 	// authenticationController.Routes(base, authNormal)
 	formController.Routes(base, authNormal)
 	inventoryController.Routes(base, authNormal)
+	hierarchyController.Routes(base, authNormal)
 
 }
