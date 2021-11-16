@@ -1,14 +1,41 @@
 basePath: /api/v1
 definitions:
-  model.Dog:
+  model.Form:
     properties:
-      age:
-        type: integer
+      creationDate:
+        type: string
+      hierarchy:
+        type: string
       id:
         type: string
-      name:
+      modifiedDate:
         type: string
-      owner:
+      sections:
+        items: {}
+        type: array
+      typeForm:
+        type: string
+    type: object
+  model.Inventory:
+    properties:
+      comunaId:
+        type: string
+      creationDate:
+        type: string
+      details: {}
+      hierarchy:
+        type: string
+      id:
+        type: string
+      institucionId:
+        type: string
+      modifiedDate:
+        type: string
+      provinciaId:
+        type: string
+      regionId:
+        type: string
+      state:
         type: string
     type: object
   util.Error:
@@ -24,65 +51,83 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: Backend de prueba enfocado en guiar el desarrollo
+  description: Backend enfocado de formulario de jarquías para Pnrrd
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Documentacion template con swagger
+  title: Documentación Servicio formularios Pnrrd
   version: "1.0"
 paths:
-  /dogs:
+  /forms:
     get:
-      operationId: get-all-dogs
+      operationId: get-form
+      parameters:
+      - description: Tipo de formulario, que puede ser INFORMATION o RESOURCE
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: Jerarquía del  formulario, por defecto solo se maneja general
+        in: query
+        name: hierarchy
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Dog'
-      summary: get all dogs in the todo list
-    post:
-      operationId: create-dog
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Dog'
+            $ref: '#/definitions/model.Form'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/util.Error'
-      summary: add a new item to the todo list
-  /dogs/{id}:
-    delete:
-      operationId: delete-dog-by-id
+      summary: Obtener formulario general o de recursos para una jerarquía especifica
+      tags:
+      - forms
+    post:
+      consumes:
+      - application/json
+      operationId: create-form
       parameters:
-      - description: dog ID
-        in: path
-        name: id
+      - description: Crear Formulario
+        in: body
+        name: form
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/model.Form'
       produces:
       - application/json
       responses:
         "200":
-          description: ""
-        "404":
-          description: Not Found
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Form'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/util.Error'
-      summary: delete a dog item by ID
+      summary: crear un nuevo formulario
+      tags:
+      - forms
+  /inventories:
     get:
-      operationId: get-dog-by-id
+      operationId: get-inventory
       parameters:
-      - description: dog ID
-        in: path
-        name: id
+      - description: Id de institución
+        in: query
+        name: institution
         required: true
+        type: string
+      - description: Tipo de jararquía de inventario solicitado
+        in: query
+        name: hierarchy
+        required: true
+        type: string
+      - description: Id de la jerarquía solicitada
+        in: query
+        name: hierarchy_id
         type: string
       produces:
       - application/json
@@ -90,12 +135,41 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Dog'
-        "404":
-          description: Not Found
+            $ref: '#/definitions/model.Inventory'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/util.Error'
-      summary: get a dog item by ID
+      summary: Obtener inventario de una institución, para una jerarquía especifica
+      tags:
+      - inventory
+    put:
+      consumes:
+      - application/json
+      operationId: update-inventory
+      parameters:
+      - description: Actualizar inventario
+        in: body
+        name: inventory
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.Inventory'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Inventory'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.Error'
+      summary: Ingresar actualizaciones de inventario, para una institución
+      tags:
+      - inventory
 securityDefinitions:
   BasicAuth:
     type: basic

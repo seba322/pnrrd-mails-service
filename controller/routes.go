@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"github.com/citiaps/template-go-rest/middleware"
-	"github.com/citiaps/template-go-rest/model"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/middleware"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +14,12 @@ type PaginationParams struct {
 type FormParams struct {
 	FormType  string `form:"type" binding:"required"`
 	Hierarchy string `form:"hierarchy"`
+}
+
+type InventoryParams struct {
+	Institution  string `form:"institution" binding:"required"`
+	Hierarchy    string `form:"hierarchy" binding:"required"`
+	Hierarchy_id string `form:"hierarchy_id"`
 }
 
 const (
@@ -31,21 +37,20 @@ const (
 
 // Controllers
 
-var dogController DogController
 var formController FormController
+var inventoryController InventoryController
 
 // Models
-var dogModel model.Dog
 var userModel model.User
 var formModel model.Form
+var inventoryModel model.Inventory
 
 func Routes(base *gin.RouterGroup) {
 	// Middleware
 	authNormal := middleware.LoadJWTAuth()
 
 	// authenticationController.Routes(base, authNormal)
-	dogController.Routes(base, authNormal)
-
 	formController.Routes(base, authNormal)
+	inventoryController.Routes(base, authNormal)
 
 }

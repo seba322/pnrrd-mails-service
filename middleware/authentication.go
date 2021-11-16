@@ -1,13 +1,12 @@
 package middleware
 
 import (
-	"context"
 	"log"
 	"os"
 	"time"
 
-	"github.com/citiaps/template-go-rest/model"
-	"github.com/citiaps/template-go-rest/util"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/model"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/util"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -79,9 +78,8 @@ func GeneratePassword(password string) string {
 // AuthorizatorFunc : funcion tipo middleware que define si el usuario esta autorizado a utilizar la siguiente funcion
 func AuthorizatorFunc(data interface{}, c *gin.Context) bool {
 	user := data.(map[string]interface{})
-	colUser, _ := model.GetCollection(model.CollectionNameUser)
+	colUser, _, ctx := model.GetCollection(model.CollectionNameUser)
 	// defer session.Close()
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	var usuario model.User
 	bsonId, err := primitive.ObjectIDFromHex(user["id"].(string))

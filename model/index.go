@@ -33,6 +33,30 @@ func CreateIndex(session *mongo.Database) {
 	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
 
 	_, err := session.Collection(CollectionNameForm).Indexes().CreateMany(context.Background(), formIndex, opts)
+
+	if err != nil {
+		log.Printf("Error al crear indice %s en : %s, %s", "TaggedData", "idData", err)
+		panic("No se pudo crear indice")
+	}
+
+	InventoryIndex := []mongo.IndexModel{
+
+		{
+			Keys: bsonx.Doc{{Key: "institucion_id", Value: bsonx.Int32(1)}},
+		},
+		{
+			Keys: bsonx.Doc{{Key: "region_id", Value: bsonx.Int32(1)}},
+		},
+		{
+			Keys: bsonx.Doc{{Key: "provincia_id", Value: bsonx.Int32(1)}},
+		},
+		{
+			Keys: bsonx.Doc{{Key: "comuna_id", Value: bsonx.Int32(1)}},
+		},
+	}
+
+	_, err = session.Collection(CollectionNameInventory).Indexes().CreateMany(context.Background(), InventoryIndex, opts)
+
 	if err != nil {
 		log.Printf("Error al crear indice %s en : %s, %s", "TaggedData", "idData", err)
 		panic("No se pudo crear indice")

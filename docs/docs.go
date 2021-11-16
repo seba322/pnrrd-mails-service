@@ -32,33 +32,74 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/dogs": {
+        "/forms": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get all dogs in the todo list",
-                "operationId": "get-all-dogs",
+                "tags": [
+                    "forms"
+                ],
+                "summary": "Obtener formulario general o de recursos para una jerarquía especifica",
+                "operationId": "get-form",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tipo de formulario, que puede ser INFORMATION o RESOURCE",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Jerarquía del  formulario, por defecto solo se maneja general",
+                        "name": "hierarchy",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.Error"
                         }
                     }
                 }
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "add a new item to the todo list",
-                "operationId": "create-dog",
+                "tags": [
+                    "forms"
+                ],
+                "summary": "crear un nuevo formulario",
+                "operationId": "create-form",
+                "parameters": [
+                    {
+                        "description": "Crear Formulario",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Form"
                         }
                     },
                     "400": {
@@ -70,58 +111,88 @@ var doc = `{
                 }
             }
         },
-        "/dogs/{id}": {
+        "/inventories": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get a dog item by ID",
-                "operationId": "get-dog-by-id",
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Obtener inventario de una institución, para una jerarquía especifica",
+                "operationId": "get-inventory",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "dog ID",
-                        "name": "id",
-                        "in": "path",
+                        "description": "Id de institución",
+                        "name": "institution",
+                        "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tipo de jararquía de inventario solicitado",
+                        "name": "hierarchy",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id de la jerarquía solicitada",
+                        "name": "hierarchy_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Inventory"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/util.Error"
                         }
                     }
                 }
             },
-            "delete": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "delete a dog item by ID",
-                "operationId": "delete-dog-by-id",
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Ingresar actualizaciones de inventario, para una institución",
+                "operationId": "update-inventory",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "dog ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Actualizar inventario",
+                        "name": "inventory",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Inventory"
+                            }
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Inventory"
+                        }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/util.Error"
                         }
@@ -131,19 +202,59 @@ var doc = `{
         }
     },
     "definitions": {
-        "model.Dog": {
+        "model.Form": {
             "type": "object",
             "properties": {
-                "age": {
-                    "type": "integer"
+                "creationDate": {
+                    "type": "string"
+                },
+                "hierarchy": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
-                "name": {
+                "modifiedDate": {
                     "type": "string"
                 },
-                "owner": {
+                "sections": {
+                    "type": "array",
+                    "items": {}
+                },
+                "typeForm": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Inventory": {
+            "type": "object",
+            "properties": {
+                "comunaId": {
+                    "type": "string"
+                },
+                "creationDate": {
+                    "type": "string"
+                },
+                "details": {},
+                "hierarchy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institucionId": {
+                    "type": "string"
+                },
+                "modifiedDate": {
+                    "type": "string"
+                },
+                "provinciaId": {
+                    "type": "string"
+                },
+                "regionId": {
+                    "type": "string"
+                },
+                "state": {
                     "type": "string"
                 }
             }
@@ -182,8 +293,8 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "localhost:8080",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
-	Title:       "Documentacion template con swagger",
-	Description: "Backend de prueba enfocado en guiar el desarrollo",
+	Title:       "Documentación Servicio formularios Pnrrd",
+	Description: "Backend enfocado de formulario de jarquías para Pnrrd",
 }
 
 type s struct{}

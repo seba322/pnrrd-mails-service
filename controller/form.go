@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/citiaps/template-go-rest/model"
-	"github.com/citiaps/template-go-rest/util"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/model"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +33,6 @@ func (formController *FormController) Routes(base *gin.RouterGroup, authNormal *
 // @Success 200 {object} model.Form
 // @Failure 400 {object} util.Error
 // @Router /forms [get]
-
 func (formController *FormController) GetForm() func(c *gin.Context) {
 	return func(c *gin.Context) {
 

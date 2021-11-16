@@ -1,4 +1,4 @@
-module github.com/citiaps/template-go-rest
+module github.com/citiaps/pnrrd-formulario-jerarquias
 
 go 1.12
 

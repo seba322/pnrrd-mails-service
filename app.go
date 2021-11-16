@@ -6,20 +6,20 @@ import (
 	"os"
 	"time"
 
-	"github.com/citiaps/template-go-rest/controller"
-	"github.com/citiaps/template-go-rest/middleware"
-	"github.com/citiaps/template-go-rest/model"
-	"github.com/citiaps/template-go-rest/util"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/controller"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/middleware"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/model"
+	"github.com/citiaps/pnrrd-formulario-jerarquias/util"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "github.com/citiaps/template-go-rest/docs"
+	_ "github.com/citiaps/pnrrd-formulario-jerarquias/docs"
 )
 
-// @title Documentacion template con swagger
+// @title Documentación Servicio formularios Pnrrd
 // @version 1.0
-// @description Backend de prueba enfocado en guiar el desarrollo
+// @description Backend enfocado de formulario de jarquías para Pnrrd
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -42,7 +42,7 @@ func main() {
 
 	// Log
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
-	log.Println("Start template-go-rest")
+	log.Println("Start pnrrd-formulario-jerarquias")
 	log.Printf("serverUp, %s", os.Getenv("ADDR"))
 
 	// Cargar base de datos
