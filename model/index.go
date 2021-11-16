@@ -63,5 +63,19 @@ func CreateIndex(session *mongo.Database) {
 		panic("No se pudo crear indice")
 	}
 
+	HierarchyIndex := []mongo.IndexModel{
+
+		{
+			Keys: bsonx.Doc{{Key: "_id", Value: bsonx.Int32(1)}},
+		},
+	}
+
+	_, err = session.Collection(CollectionNameHierarchy).Indexes().CreateMany(context.Background(), HierarchyIndex, opts)
+
+	if err != nil {
+		log.Printf("Error al crear indice %s en : %s, %s", "TaggedData", "idData", err)
+		panic("No se pudo crear indice")
+	}
+
 	log.Print("Creando indices")
 }
