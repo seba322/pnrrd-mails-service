@@ -1,8 +1,5 @@
 {
-  "_id": "adasda",
-  "creation_date": 1552482488.87651,
-  "modified_date": 1634831922.24348,
-  "type": "INFORMATION",
+  "typeForm": "INFORMATION",
   "hierarchy": "GENERAL",
   "sections": [
     {

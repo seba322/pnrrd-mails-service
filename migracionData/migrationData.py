@@ -40,7 +40,7 @@ def getAllDataCollection(collectionRef):
     datArray = []
     # print("3")
     for d in data:
-        print(d)
+        # print(d)
         datArray.append(d)
     return datArray
 
@@ -71,17 +71,19 @@ def reduceJearquias(jsonRegiones, regionesBd):
         if idD == 0:
             continue
         # print(idD)
+        j["_id"] = ObjectId()
+        j["regionId"] = idD
         data = findDataRegionByid(jsonRegiones, idD)
         # print(data)
         addIdsJerarquias(data)
         j["provincias"] = data
+
         nuevoJson.append(j.copy())
     return nuevoJson
 
 
 def insertArrayData(col, data):
     col.insert_many(data)
-
 
     # print("conect")
 DB = get_database()
@@ -94,7 +96,16 @@ regionesBd = getAllDataCollection(col)
 # print("col-get", regionesBd)
 
 nuevasJerarquias = reduceJearquias(jsonRegiones, regionesBd)
-
+nacionalRegion = {
+    "_id": ObjectId(),
+    "name": "Admin Central",
+    "order": 0,
+    "longName": "Administración Central",
+    "lat": "-33.443018",
+    "lng": "-70.65387",
+    "regionId": 0
+}
+nuevasJerarquias.append(nacionalRegion)
 
 # print("nuevaj", nuevasJerarquias)
 colJerarquias = DB["Hierarchy"]

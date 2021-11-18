@@ -123,7 +123,7 @@ def getIndexForm(form, label, p):
     return index, ""
 
 
-def getNewInventory(inventoryData, generalForm, formData):
+def getNewInventory(inventoryData, generalForm, formData, regiones):
 
     GENERAL = ["paso1", "paso2", "paso3"]
     REGIONAL_HIERARCHY = "REGIONAL"
@@ -158,7 +158,7 @@ def getNewInventory(inventoryData, generalForm, formData):
             # print(p)
             if typeInv == InformationTypeForm:
 
-                regionId = 0
+                regionId = findRegionId(regiones, 0)
                 values = []
                 if p == "paso1":
                     values = pasoArr.values()
@@ -220,14 +220,14 @@ def getNewInventory(inventoryData, generalForm, formData):
                         else:
                             index, newLabel = getIndexForm(formData, label, p)
                             label = newLabel
-
+                        idRegion = findRegionId(regiones, regionId)
                         newObjCap = {}
                         newObjCap["institucion_id"] = insId
                         newObjCap["creation_date"] = creationDate
                         newObjCap["modified_date"] = modifiedDate
                         newObjCap["type_inventory"] = typeInv
                         newObjCap["hierarchy"] = jerarquia
-                        newObjCap["hierarchy_id"] = regionId
+                        newObjCap["hierarchy_id"] = idRegion
                         newObjCap["index"] = index
                         newObjCap["_id"] = ObjectId()
                         newObjCap["details"] = cap
@@ -259,6 +259,15 @@ def writeJson(name, data):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
+def findRegionId(regiones, id):
+
+    for r in regiones:
+        if id == r["regionId"]:
+            return r["_id"]
+
+    return ""
+
+
     # print("conect")
 DB = get_database()
 # print("col")
@@ -288,7 +297,7 @@ currentInventory = getAllDataCollection(colInventory)
 
 
 newInv, rezagados, nrezagados, nnew, labelRe = getNewInventory(
-    currentInventory, generalForm, formData)
+    currentInventory, generalForm, formData, jerarquiasJson)
 
 
 print("Rezagados:", nrezagados, " nnew:", nnew)

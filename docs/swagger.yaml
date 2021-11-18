@@ -57,7 +57,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8080
+host: localhost:8000
 info:
   contact:
     email: support@swagger.io
@@ -185,6 +185,10 @@ paths:
     put:
       consumes:
       - application/json
+      description: |-
+        El body es un arreglo del objeto de respuesta que se muestra mas abajo
+        Cada respuesta debe ir en el arreglo del body (da lo mismo el orden)
+        Es importantel agregar el index de la capacidad que se esta declarando
       operationId: update-inventory
       parameters:
       - description: Actualizar inventario
@@ -209,7 +213,4 @@ paths:
       summary: Ingresar actualizaciones de inventario, para una institución
       tags:
       - inventory
-securityDefinitions:
-  BasicAuth:
-    type: basic
 swagger: "2.0"

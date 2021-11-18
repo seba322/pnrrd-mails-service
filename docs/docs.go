@@ -193,6 +193,7 @@ var doc = `{
                 }
             },
             "put": {
+                "description": "El body es un arreglo del objeto de respuesta que se muestra mas abajo\nCada respuesta debe ir en el arreglo del body (da lo mismo el orden)\nEs importantel agregar el index de la capacidad que se esta declarando",
                 "consumes": [
                     "application/json"
                 ],
@@ -322,11 +323,6 @@ var doc = `{
                 }
             }
         }
-    },
-    "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
-        }
     }
 }`
 
@@ -342,7 +338,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8080",
+	Host:        "localhost:8000",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "Documentación Servicio formularios Pnrrd",
