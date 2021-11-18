@@ -29,7 +29,7 @@ func (formModel *Form) GetForm(typeForm string, hierarchy string) (*Form, error)
 	col, _, ctx := GetCollection(CollectionNameForm)
 
 	var form Form
-	query := bson.D{{"type_form", typeForm}, {"hierarchy", hierarchy}}
+	query := bson.D{{Key: "type_form", Value: typeForm}, {Key: "hierarchy", Value: hierarchy}}
 
 	err := col.FindOne(ctx, query).Decode(&form)
 

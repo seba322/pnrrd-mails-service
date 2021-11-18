@@ -288,7 +288,7 @@
       "form": [
         {
           "label": "Carretilla",
-          "index": "6-0"
+          "index": 8
         },
         {
           "label": "Herramientas de limpieza, despeje (usos diversos)",
@@ -440,7 +440,9 @@
         {
           "label": "Otro",
           "index": "4-33"
-        }
+        },
+        { "label": "Tratamiento de desechos (domésticos)", "index": "4-34" },
+        { "label": "Viviendas de emergencia", "index": "4-35" }
       ]
     },
     {
@@ -451,11 +453,11 @@
       "index": 6,
       "form": [
         {
-          "label": "Instrumentos de Planificación institucionales (Plan de Emergencia, Planes de Contingencia, Planes de Continuidad Operacional, Planes de Respuesta por alguna variable de riesgo específica, otros).",
+          "label": "Centro de acopio y distribución (habilitación y administración, bodegas)",
           "index": "8-0"
         },
         {
-          "label": "Acuerdos asociativos técnicos (convenios y protocolos) de coordinación sectorial",
+          "label": "Albergues (habilitación y administración)",
           "index": "8-1"
         }
       ]
@@ -499,6 +501,10 @@
         {
           "label": "Plataformas web de administración de información geoespacial",
           "index": "7-7"
+        },
+        {
+          "label": "Otro",
+          "index": "7-8"
         }
       ]
     }

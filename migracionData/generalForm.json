@@ -13,12 +13,12 @@
       "index": 1,
       "form": [
         {
-          "label": "Nombre del organismo",
+          "label": "Nombre organismo",
           "index": "1G-0",
           "type": "text"
         },
         {
-          "label": "Misión del organismo",
+          "label": "Misión organismo",
           "index": "1G-1",
           "type": "text"
         },
@@ -37,6 +37,19 @@
         },
         {
           "label": "Alcance territorial del levantamiento de capacidades",
+          "index": "1G-3",
+          "type": "check",
+          "options": [
+            "Internacional",
+            "Nacional",
+            "Regional",
+            "Provincial",
+            "Comunal",
+            "Otro"
+          ]
+        },
+        {
+          "label": "Identificación de responsables del levantamiento",
           "index": "1G-3",
           "type": "check",
           "options": [
@@ -141,7 +154,7 @@
           "index": "3G-0",
           "type": "check",
           "options": [
-            "Alimentario ",
+            "Alimentario",
             "Energético",
             "Tecnológico",
             "Logístico",
