@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 import json
 from bson import ObjectId, json_util
-import datetime
 
+
+from datetime import datetime
 client = MongoClient("localhost", 27017)
 
 
@@ -177,8 +178,10 @@ def getNewInventory(inventoryData, generalForm, formData, regiones):
                         index, _ = getIndexForm(formData, label, p)
                     newObjCap = {}
                     newObjCap["institucion_id"] = insId
-                    newObjCap["creation_date"] = creationDate
-                    newObjCap["modified_date"] = modifiedDate
+                    newObjCap["creation_date"] = datetime.fromtimestamp(
+                        creationDate)
+                    newObjCap["modified_date"] = datetime.fromtimestamp(
+                        modifiedDate)
                     newObjCap["type_inventory"] = typeInv
                     newObjCap["hierarchy"] = jerarquia
                     newObjCap["hierarchy_id"] = regionId
@@ -223,8 +226,10 @@ def getNewInventory(inventoryData, generalForm, formData, regiones):
                         idRegion = findRegionId(regiones, regionId)
                         newObjCap = {}
                         newObjCap["institucion_id"] = insId
-                        newObjCap["creation_date"] = creationDate
-                        newObjCap["modified_date"] = modifiedDate
+                        newObjCap["creation_date"] = datetime.fromtimestamp(
+                            creationDate)
+                        newObjCap["modified_date"] = datetime.fromtimestamp(
+                            modifiedDate)
                         newObjCap["type_inventory"] = typeInv
                         newObjCap["hierarchy"] = jerarquia
                         newObjCap["hierarchy_id"] = idRegion
@@ -266,7 +271,6 @@ def findRegionId(regiones, id):
             return r["_id"]
 
     return ""
-
 
     # print("conect")
 DB = get_database()
