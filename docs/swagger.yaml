@@ -57,7 +57,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8000
+host: https://pnrrd.jerarquias.test-citiaps.cl
 info:
   contact:
     email: support@swagger.io
