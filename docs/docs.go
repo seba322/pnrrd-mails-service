@@ -338,7 +338,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8000",
+	Host:        "https://pnrrd.jerarquias.test-citiaps.cl",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "Documentación Servicio formularios Pnrrd",

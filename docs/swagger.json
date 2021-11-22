@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8000",
+    "host": "https://pnrrd.jerarquias.test-citiaps.cl",
     "basePath": "/api/v1",
     "paths": {
         "/forms": {
