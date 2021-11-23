@@ -52,6 +52,8 @@ func main() {
 	app.Use(middleware.CorsMiddleware())
 	// Url Base
 	base := app.Group("/api/v1/")
+
+	//servicio swagger
 	base.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	controller.Routes(base)
 
