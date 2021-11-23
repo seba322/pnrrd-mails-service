@@ -32,33 +32,74 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/dogs": {
+        "/forms": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get all dogs in the todo list",
-                "operationId": "get-all-dogs",
+                "tags": [
+                    "forms"
+                ],
+                "summary": "Obtener formulario general o de recursos para una jerarquía especifica",
+                "operationId": "get-form",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tipo de formulario, que puede ser INFORMATION o RESOURCE",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Jerarquía del  formulario, por defecto solo se maneja general",
+                        "name": "hierarchy",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.Error"
                         }
                     }
                 }
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "add a new item to the todo list",
-                "operationId": "create-dog",
+                "tags": [
+                    "forms"
+                ],
+                "summary": "crear un nuevo formulario",
+                "operationId": "create-form",
+                "parameters": [
+                    {
+                        "description": "Crear Formulario",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Form"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Form"
                         }
                     },
                     "400": {
@@ -70,19 +111,69 @@ var doc = `{
                 }
             }
         },
-        "/dogs/{id}": {
+        "/hierarchies": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get a dog item by ID",
-                "operationId": "get-dog-by-id",
+                "tags": [
+                    "hierarchy"
+                ],
+                "summary": "Obtener la lista de jerarquias, agrupadas en Regiones-Provincias-Comunas",
+                "operationId": "get-hierarchy",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Hierarchy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/inventories": {
+            "get": {
+                "description": "Con este servicio se puede obtener el inventario.\nExisten 2 tipos de inventario, de información ( tag INFORMATION ) y recursos ( tag RESOURCE). El primero enfocado en las capacidades y el segundo en  información institucional.\nSiempre que se quiera obtener la información institucional en parámetro hierarchy debe ir “NACIONAL”.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Obtener inventario de una institución, para una jerarquía especifica",
+                "operationId": "get-inventory",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "dog ID",
-                        "name": "id",
-                        "in": "path",
+                        "description": "Id de institución",
+                        "name": "institution",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tipo de jararquía de inventario solicitado",
+                        "name": "hierarchy",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id de la jerarquía solicitada, solo requerido si no es jerarquia nacional",
+                        "name": "hierarchy_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tipo de inventario solicitado (puede ser INFORMATION o RESOURCE)",
+                        "name": "type",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -90,38 +181,53 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Dog"
+                            "$ref": "#/definitions/model.Inventory"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/util.Error"
                         }
                     }
                 }
             },
-            "delete": {
+            "put": {
+                "description": "El body es un arreglo del objeto de respuesta que se muestra mas abajo\nCada respuesta debe ir en el arreglo del body (da lo mismo el orden)\nEs importantel agregar el index de la capacidad que se esta declarando",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "delete a dog item by ID",
-                "operationId": "delete-dog-by-id",
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Ingresar actualizaciones de inventario, para una institución",
+                "operationId": "update-inventory",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "dog ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Actualizar inventario",
+                        "name": "inventory",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Inventory"
+                            }
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Inventory"
+                        }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/util.Error"
                         }
@@ -131,19 +237,77 @@ var doc = `{
         }
     },
     "definitions": {
-        "model.Dog": {
+        "model.Form": {
             "type": "object",
             "properties": {
-                "age": {
-                    "type": "integer"
+                "creationDate": {
+                    "type": "string"
+                },
+                "hierarchy": {
+                    "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "modifiedDate": {
+                    "type": "string"
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {}
+                },
+                "typeForm": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Hierarchy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "string"
+                },
+                "lng": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "owner": {
+                "provincias": {
+                    "type": "array",
+                    "items": {}
+                }
+            }
+        },
+        "model.Inventory": {
+            "type": "object",
+            "properties": {
+                "creationDate": {
+                    "type": "string"
+                },
+                "details": {},
+                "hierarchy": {
+                    "type": "string"
+                },
+                "hierarchyId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "string"
+                },
+                "institucionId": {
+                    "type": "string"
+                },
+                "modifiedDate": {
+                    "type": "string"
+                },
+                "typeInvetory": {
                     "type": "string"
                 }
             }
@@ -158,11 +322,6 @@ var doc = `{
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
         }
     }
 }`
@@ -179,11 +338,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8080",
+	Host:        "https://pnrrd.jerarquias.test-citiaps.cl",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
-	Title:       "Documentacion template con swagger",
-	Description: "Backend de prueba enfocado en guiar el desarrollo",
+	Title:       "Documentación Servicio formularios Pnrrd",
+	Description: "Backend enfocado de formulario de jarquías para Pnrrd",
 }
 
 type s struct{}

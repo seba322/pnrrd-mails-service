@@ -1,4 +1,4 @@
-module github.com/citiaps/template-go-rest
+module github.com/citiaps/pnrrd-formulario-jerarquias
 
 go 1.12
 
@@ -15,6 +15,7 @@ require (
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
 	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.4
+	go.mongodb.org/mongo-driver v1.7.4
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20211109214657-ef0fda0de508 // indirect
 	golang.org/x/sys v0.0.0-20211110154304-99a53858aa08 // indirect
